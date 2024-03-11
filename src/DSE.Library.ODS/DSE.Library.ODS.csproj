@@ -6,7 +6,9 @@
     <Nullable>enable</Nullable>
     <OutputType>exe</OutputType> <!-- Remove after testing -->
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />
   </ItemGroup>
+
 </Project>
