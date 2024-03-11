@@ -5,11 +5,9 @@ using System.IO.Ports;
 public class SerialSensor : Sensor {
 
 
-    /**
-     * Serial Port Setup
-     */
-
-    static SerialPort? _serialPort;
+    private SerialPort? _serialPort;
+    private Thread serialReaderThread;
+    private bool _continue = false;
 
 
 
@@ -23,9 +21,6 @@ public class SerialSensor : Sensor {
 
     }
 
-
-    //private Thread readerThread;
-    //private SerialReader serialReader;
 
     public static void printSerialPorts()
     {
@@ -63,7 +58,6 @@ public class SerialSensor : Sensor {
 
         _serialPort.Open();
         startReaderThread();
-
     }
 
 
@@ -76,43 +70,40 @@ public class SerialSensor : Sensor {
     }
 
 
-
-
     private void startReaderThread() {
 
-        if (_serialPort != null && _serialPort.IsOpen)
-        {
-            /*
-            serialReader = new SerialReader(this);
-            serialReader.start();
-            readerThread = new Thread(serialReader);
-            readerThread.start();
-            */
+        serialReaderThread = new Thread(new ThreadStart(SerialReader));
+        //serialReaderThread = new Thread(SerialReader);
+        //serialReaderThread.setSerialPort(_serialPort)
+        serialReaderThread.Start();
 
-            OnMeasurementReceived(25);
-            OnMeasurementReceived(26);
-            OnMeasurementReceived(27);
 
-        }
+        OnMeasurementReceived(25);
+        OnMeasurementReceived(26);
+        OnMeasurementReceived(27);
+        _continue = true;
+
     }
 
 
     private void stopReaderThread() {
+        _continue = false;
+        serialReaderThread.Join();
+    }
 
-        /*
-        if (_serialPort != null && _serialPort.isOpen)
+
+    private void SerialReader() {
+
+        while (_continue)
         {
-            serialReader.stop();
             try
             {
-                readerThread.join();
+                string message = _serialPort.ReadLine();
+                Console.WriteLine(message);
             }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+            catch (TimeoutException) { }
         }
-        */
+
     }
 
 
