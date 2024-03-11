@@ -1,6 +1,5 @@
 ﻿namespace DSE.Library.ODS;
 
-using System.Collections;
 
 
 public class Sensor
@@ -12,6 +11,7 @@ public class Sensor
 
     public int doAverageOver = 10;
 
+    
 
     /**
      * Private Fields
@@ -40,23 +40,17 @@ public class Sensor
 
 
     /**
-     * Event Listener Configuration
+     * Event Handling
      */
 
-/*
-    private List<TelegramListener> eventListeners = new List<TelegramListener>();
+    
+    public event EventHandler<int>? MeasurementReceived; 
 
 
-    public void addEventListener(TelegramListener l)
+    protected virtual void OnMeasurementReceived(int Measurement)
     {
-        eventListeners.Add(l);
+        MeasurementReceived?.Invoke(this, Measurement);
     }
-
-    public void removeEventListener(TelegramListener l)
-    {
-        eventListeners.Remove(l);
-    }
-*/
 
 
 
@@ -72,7 +66,7 @@ public class Sensor
     }
 
 
-    protected void onMeasurement(int measurement)
+    protected virtual void onMeasurement(int measurement)
     {
 
         if (measurement < 99)
@@ -93,6 +87,7 @@ public class Sensor
             //log.info("Send event: " + measurement);
             Console.WriteLine("Measurement: " + measurement);
             //sendEvent(measurement);
+            OnMeasurementReceived(measurement);
         }
 
         if (doAverageOver > 0 && avgIntCounter >= avgIntArray.Length)
@@ -101,6 +96,7 @@ public class Sensor
             double avg = avgIntArray.Average();
             //log.info("Send event: " + avg.intValue());
             //sendEvent((int)avg);
+            OnMeasurementReceived((int)avg); 
             Console.WriteLine("Avg. Measurement: " + avg);
 
         }

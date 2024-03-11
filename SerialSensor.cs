@@ -13,7 +13,7 @@ public class SerialSensor : Sensor {
 
 
 
-    public SerialPort getSerialPort()
+    public SerialPort? getSerialPort()
     {
         if(_serialPort != null) {
             return _serialPort;
@@ -88,6 +88,10 @@ public class SerialSensor : Sensor {
             readerThread = new Thread(serialReader);
             readerThread.start();
             */
+
+            OnMeasurementReceived(25);
+            OnMeasurementReceived(26);
+            OnMeasurementReceived(27);
 
         }
     }
