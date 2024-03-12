@@ -2,36 +2,30 @@ namespace DSE.Library.ODS;
 
 using System.IO.Ports;
 
-public class SerialSensor : Sensor {
+public class SerialSensor : Sensor, IDisposable
+{
+
+    private SerialPort? serialPort;
+    private Thread? serialReaderThread;
+    private bool @continue;
 
 
-    private SerialPort? _serialPort;
-    private Thread serialReaderThread;
-    private bool _continue = false;
+
+    public SerialPort? GetSerialPort() => this.serialPort;
 
 
-
-    public SerialPort? getSerialPort()
-    {
-        if(_serialPort != null) {
-            return _serialPort;
-        } else {
-            return null;
-        }
-
-    }
-
-
-    public static void printSerialPorts()
+    public static void PrintSerialPorts()
     {
 
-        string[] ports = SerialPort.GetPortNames();
+        var ports = SerialPort.GetPortNames();
 
-        if(ports.Length < 1) {
+        if(ports == null || ports.Length < 1)
+        {
             Console.WriteLine("No serial ports found.");
+            return;
         }
 
-        foreach (string port in ports)
+        foreach (var port in ports)
         {
             Console.WriteLine("Serial port: " + port);
         }
@@ -39,66 +33,71 @@ public class SerialSensor : Sensor {
     }
 
 
-    public static String[] getSerialPorts()
+    public static string[] GetSerialPorts()
     {
-        string[] ports = SerialPort.GetPortNames();
+        var ports = SerialPort.GetPortNames();
         return ports;
     }
 
 
 
-    public void openPort(String portName, int baudRate)
+    public void OpenPort(string portName, int baudRate)
     {
         // Create a new SerialPort object with default settings.
-        _serialPort = new SerialPort();
+        this.serialPort = new SerialPort
+        {
+            // Allow the user to set the appropriate properties.
+            PortName = portName,
+            BaudRate = baudRate
+        };
 
-        // Allow the user to set the appropriate properties.
-        _serialPort.PortName = portName;
-        _serialPort.BaudRate = baudRate;
-
-        _serialPort.Open();
-        startReaderThread();
+        this.serialPort.Open();
+        this.StartReaderThread();
     }
 
 
-    public void closePort()
+    public void ClosePort()
     {
-        if(_serialPort != null && _serialPort.IsOpen) {
-            stopReaderThread();
-            _serialPort.Close();
+        if(this.serialPort != null && this.serialPort.IsOpen)
+        {
+            this.StopReaderThread();
+            this.serialPort.Close();
         }
     }
 
 
-    private void startReaderThread() {
+    private void StartReaderThread()
+    {
 
-        serialReaderThread = new Thread(new ThreadStart(SerialReader));
+        this.serialReaderThread = new Thread(new ThreadStart(this.SerialReader));
         //serialReaderThread = new Thread(SerialReader);
         //serialReaderThread.setSerialPort(_serialPort)
-        serialReaderThread.Start();
+        this.serialReaderThread.Start();
 
 
-        OnMeasurementReceived(25);
-        OnMeasurementReceived(26);
-        OnMeasurementReceived(27);
-        _continue = true;
+        this.OnMeasurementReceived(25);
+        this.OnMeasurementReceived(26);
+        this.OnMeasurementReceived(27);
+        this.@continue = true;
 
     }
 
 
-    private void stopReaderThread() {
-        _continue = false;
-        serialReaderThread.Join();
+    private void StopReaderThread()
+    {
+        this.@continue = false;
+        this.serialReaderThread?.Join();
     }
 
 
-    private void SerialReader() {
+    private void SerialReader()
+    {
 
-        while (_continue)
+        while (this.@continue)
         {
             try
             {
-                string message = _serialPort.ReadLine();
+                var message = this.serialPort?.ReadLine();
                 Console.WriteLine(message);
             }
             catch (TimeoutException) { }
@@ -106,5 +105,10 @@ public class SerialSensor : Sensor {
 
     }
 
+    public void Dispose()
+    {
+        this.ClosePort();
+        GC.SuppressFinalize(this);
+    }
 
 }

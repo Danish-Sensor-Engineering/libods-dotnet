@@ -1,7 +1,6 @@
 ﻿namespace DSE.Library.ODS;
 
 
-
 public class Sensor
 {
 
@@ -9,49 +8,37 @@ public class Sensor
      * Various Configurable Options
      */
 
-    public int doAverageOver = 10;
+    private int doAverageOver = 10;
 
-    
 
     /**
      * Private Fields
      */
 
     private int avgIntCounter;
-    private int[] avgIntArray;
+    private int[] avgIntArray = Array.Empty<int>();
 
 
     /**
      *  Telegram Handler Setup
      */
-    protected TelegramHandler? telegramHandler;
 
-    public void setTelegramHandler(TelegramHandler telegramHandler)
-    {
-        this.telegramHandler = telegramHandler;
-    }
+    private TelegramHandler? telegramHandler;
 
-    public TelegramHandler getTelegramHandler()
-    {
-        return telegramHandler;
-    }
+    public void SetTelegramHandler(TelegramHandler telegramHandler) => this.telegramHandler = telegramHandler;
 
+    public TelegramHandler? GetTelegramHandler() => this.telegramHandler;
 
+    public void SetAverage(int avg) => this.doAverageOver = avg;
 
 
     /**
      * Event Handling
      */
 
-    
-    public event EventHandler<int>? MeasurementReceived; 
+    public event EventHandler<int>? MeasurementReceived;
 
-
-    protected virtual void OnMeasurementReceived(int Measurement)
-    {
-        MeasurementReceived?.Invoke(this, Measurement);
-    }
-
+    protected virtual void OnMeasurementReceived(int measurement) => MeasurementReceived?.Invoke(this, measurement);
 
 
     /**
@@ -59,14 +46,14 @@ public class Sensor
      */
 
 
-    protected void clear()
+    protected void Clear()
     {
-        avgIntCounter = 0;
-        avgIntArray = new int[this.doAverageOver];
+        this.avgIntCounter = 0;
+        this.avgIntArray = new int[this.doAverageOver];
     }
 
 
-    protected virtual void onMeasurement(int measurement)
+    protected virtual void OnMeasurement(int measurement)
     {
 
         if (measurement < 99)
@@ -76,27 +63,26 @@ public class Sensor
             return;
         }
 
-        if (doAverageOver > 0)
+        if (this.doAverageOver > 0)
         {
             //log.info("Adding to avg. buffer: " + measurement);
-            avgIntArray[avgIntCounter] = measurement;
-            avgIntCounter++;
+            this.avgIntArray[this.avgIntCounter] = measurement;
+            this.avgIntCounter++;
         }
         else
         {
             //log.info("Send event: " + measurement);
             Console.WriteLine("Measurement: " + measurement);
             //sendEvent(measurement);
-            OnMeasurementReceived(measurement);
+            this.OnMeasurementReceived(measurement);
         }
 
-        if (doAverageOver > 0 && avgIntCounter >= avgIntArray.Length)
+        if (this.doAverageOver > 0 && this.avgIntCounter >= this.avgIntArray.Length)
         {
-            avgIntCounter = 0;
-            double avg = avgIntArray.Average();
+            this.avgIntCounter = 0;
+            var avg = this.avgIntArray.Average();
             //log.info("Send event: " + avg.intValue());
-            //sendEvent((int)avg);
-            OnMeasurementReceived((int)avg); 
+            this.OnMeasurementReceived((int)avg);
             Console.WriteLine("Avg. Measurement: " + avg);
 
         }

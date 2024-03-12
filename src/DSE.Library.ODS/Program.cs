@@ -1,8 +1,7 @@
-using System;
 using DSE.Library.ODS;
 
-class Program {
-
+internal class Program
+{
 
     public static void Main()
     {
@@ -11,41 +10,49 @@ class Program {
 
 
         // Print available ports
-        string[] ports = SerialSensor.getSerialPorts();
+        var ports = SerialSensor.GetSerialPorts();
         if (ports.Length < 1)
         {
             Console.WriteLine("No serial ports found.");
             System.Environment.Exit(-1);
         }
 
+
         // Ask user for port to use
-        foreach (string p in ports)
+        foreach (var p in ports)
         {
             Console.WriteLine("Serial port: " + p);
         }
         Console.Write("Please enter port name to use: ");
-        string port = Console.ReadLine();
+        var port = Console.ReadLine();
+
 
         SerialSensor sensor = new();
-        sensor.setTelegramHandler(new TelegramHandler16Bit());
+        sensor.SetTelegramHandler(new TelegramHandler16Bit());
+
 
         // Register our event handler
-        sensor.MeasurementReceived += onEvent; // register with an event
+        sensor.MeasurementReceived += OnEvent; // register with an event
 
         // This can throw error
-        sensor.openPort(port, 115200);
+        if(port != null)
+        {
+            sensor.OpenPort(port, 115200);
 
+            // TODO: Sleep some time
 
-        sensor.closePort();
+            sensor.ClosePort();
+        }
 
         // Done.
     }
 
 
     // event handler
-    public static void onEvent(object sender, int Measurement)
+    public static void OnEvent(object sender, int measurement)
     {
-        Console.WriteLine("Measurement: " + Measurement);
+        Console.WriteLine("Measurement Event: " + measurement);
     }
+
 
 }
