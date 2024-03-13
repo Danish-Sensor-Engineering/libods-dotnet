@@ -5,20 +5,21 @@ public abstract class TelegramHandler
 {
 
     // Implemented as either 16bit or 18bit in inherited class
-    protected abstract int Convert(int d1, int d2, int d3);
-    protected abstract bool IsHeader(int h);
+    protected abstract uint Convert(uint d1, uint d2, uint d3);
+    public abstract bool IsHeader(uint h);
 
-    public int Process(LinkedList<int> readBuffer) {
+    public uint Process(Queue<uint> readBuffer)
+    {
 
         if (readBuffer.Count < 4)
         {
-            return -1;
+            return 0;
         }
 
-        var b1 = readBuffer.First.Value;
-        var b2 = readBuffer.First.Value;
-        var b3 = readBuffer.First.Value;
-        Console.WriteLine("Bytes: " + b1 + ", " + b2 + ", " + b3);
+        var b1 = readBuffer.Dequeue();
+        var b2 = readBuffer.Dequeue();
+        var b3 = readBuffer.Dequeue();
+        //Console.WriteLine("Bytes: " + b1 + ", " + b2 + ", " + b3);
 
         // Call 16/18 bit specific conversion method
         return this.Convert(b1, b2, b3);

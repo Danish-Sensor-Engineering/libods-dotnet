@@ -8,15 +8,15 @@ public class Sensor
      * Various Configurable Options
      */
 
-    private int doAverageOver = 10;
+    private uint doAverageOver = 10;
 
 
     /**
      * Private Fields
      */
 
-    private int avgIntCounter;
-    private int[] avgIntArray = Array.Empty<int>();
+    private uint avgIntCounter;
+    private uint[] avgIntArray = new uint[10]; // Array.Empty<uint>();
 
 
     /**
@@ -29,16 +29,21 @@ public class Sensor
 
     public TelegramHandler? GetTelegramHandler() => this.telegramHandler;
 
-    public void SetAverage(int avg) => this.doAverageOver = avg;
+    public void SetAverage(uint avg)
+    {
+        this.doAverageOver = avg;
+        this.avgIntArray = new uint[avg];
+        this.avgIntCounter = 0;
+    }
 
 
     /**
      * Event Handling
      */
 
-    public event EventHandler<int>? MeasurementReceived;
+    public event EventHandler<uint>? MeasurementReceived;
 
-    protected virtual void OnMeasurementReceived(int measurement) => MeasurementReceived?.Invoke(this, measurement);
+    protected virtual void OnMeasurementReceived(uint measurement) => MeasurementReceived?.Invoke(this, measurement);
 
 
     /**
@@ -49,11 +54,11 @@ public class Sensor
     protected void Clear()
     {
         this.avgIntCounter = 0;
-        this.avgIntArray = new int[this.doAverageOver];
+        this.avgIntArray = new uint[this.doAverageOver];
     }
 
 
-    protected virtual void OnMeasurement(int measurement)
+    protected virtual void OnMeasurement(uint measurement)
     {
 
         if (measurement < 99)
@@ -80,13 +85,25 @@ public class Sensor
         if (this.doAverageOver > 0 && this.avgIntCounter >= this.avgIntArray.Length)
         {
             this.avgIntCounter = 0;
-            var avg = this.avgIntArray.Average();
+            var avg = DoAverage(this.avgIntArray);
             //log.info("Send event: " + avg.intValue());
-            this.OnMeasurementReceived((int)avg);
+            this.OnMeasurementReceived(avg);
             Console.WriteLine("Avg. Measurement: " + avg);
 
         }
 
+    }
+
+
+    private static uint DoAverage(uint[] input)
+    {
+        uint sum = 0;
+        for (uint i = 0; i < input.Length; i++)
+        {
+            sum += input[i];
+        }
+
+        return (uint)(sum / input.Length);
     }
 
 }

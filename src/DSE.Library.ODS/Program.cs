@@ -6,7 +6,7 @@ internal class Program
     public static void Main()
     {
         // Foo
-        Console.WriteLine("Test Program - DSE Library ODS");
+        Console.WriteLine("Test Program - DSE ODS Library for .net");
 
 
         // Print available ports
@@ -14,7 +14,7 @@ internal class Program
         if (ports.Length < 1)
         {
             Console.WriteLine("No serial ports found.");
-            System.Environment.Exit(-1);
+            Environment.Exit(-1);
         }
 
 
@@ -23,19 +23,19 @@ internal class Program
         {
             Console.WriteLine("Serial port: " + p);
         }
-        Console.Write("Please enter port name to use: ");
-        var port = Console.ReadLine();
-
+        //Console.Write("Please enter port name to use: ");
+        //var port = Console.ReadLine();
+        var port = "/dev/ttyUSB0";
 
         SerialSensor sensor = new();
-        sensor.SetTelegramHandler(new TelegramHandler16Bit());
+        sensor.SetTelegramHandler(new TelegramHandler18Bit());  // Or TelegramHandler16Bit()
 
 
         // Register our event handler
         sensor.MeasurementReceived += OnEvent; // register with an event
 
         // This can throw error
-        if(port != null)
+        if (port != null)
         {
             sensor.OpenPort(port, 115200);
 
@@ -49,8 +49,9 @@ internal class Program
 
 
     // event handler
-    public static void OnEvent(object sender, int measurement)
+    public static void OnEvent(object sender, uint measurement)
     {
+        // TODO: Do something with measurement result
         Console.WriteLine("Measurement Event: " + measurement);
     }
 

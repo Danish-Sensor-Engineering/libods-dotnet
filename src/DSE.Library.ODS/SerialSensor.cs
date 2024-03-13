@@ -68,18 +68,12 @@ public class SerialSensor : Sensor, IDisposable
 
     private void StartReaderThread()
     {
-
         this.serialReaderThread = new Thread(new ThreadStart(this.SerialReader));
-        //serialReaderThread = new Thread(SerialReader);
-        //serialReaderThread.setSerialPort(_serialPort)
         this.serialReaderThread.Start();
 
-
-        this.OnMeasurementReceived(25);
-        this.OnMeasurementReceived(26);
-        this.OnMeasurementReceived(27);
         this.@continue = true;
-
+        Thread.Sleep(5000);
+        this.@continue = false;
     }
 
 
@@ -93,12 +87,36 @@ public class SerialSensor : Sensor, IDisposable
     private void SerialReader()
     {
 
+        var queue = new Queue<uint>();
+
         while (this.@continue)
         {
             try
             {
-                var message = this.serialPort?.ReadLine();
-                Console.WriteLine(message);
+                var b = this.serialPort?.ReadByte();
+                if (b == null)
+                {
+                    continue;
+                }
+
+                //Console.WriteLine(b & 0xFF); // NOTE: To get unsigned int !!!
+                var i = (uint)(b & 0xFF);
+                queue.Enqueue(i);
+
+                // Remove non-header bytes from start of queue
+                if (queue.Count > 1 && !this.GetTelegramHandler().IsHeader(queue.Peek()))
+                {
+                    queue.Dequeue();
+                    continue;
+                }
+
+                //log.info("Post: " + readBuffer.peek());
+                while (queue.Count > 3)
+                {
+                    var measurement = this.GetTelegramHandler().Process(queue);
+                    this.OnMeasurement(measurement);
+                    //log.info("Read buffer size: " + readBuffer.size());
+                }
             }
             catch (TimeoutException) { }
         }
