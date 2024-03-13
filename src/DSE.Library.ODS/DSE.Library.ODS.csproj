@@ -5,6 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>exe</OutputType> <!-- Remove after testing -->
+
+    <PackageId>DSE.Library.ODS</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Mark Nellemann</Authors>
+    <Company>Danish Sensor Engineering</Company>
+    <Product>ODS Library</Product>
+
   </PropertyGroup>
 
   <ItemGroup>

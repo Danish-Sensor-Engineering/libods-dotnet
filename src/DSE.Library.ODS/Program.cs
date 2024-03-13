@@ -5,7 +5,7 @@ using DSE.Library.ODS;
     to setup an event listener to receive measurements.
 */
 
-internal class Program
+internal sealed class Program
 {
 
     public static void Main()

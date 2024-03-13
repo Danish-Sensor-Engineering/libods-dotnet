@@ -6,13 +6,19 @@ using DSE.Library.ODS;
 public class TelegramHandler18BitTest
 {
 
+    private TelegramHandler? telegramHandler;
+
+
+    [TestInitialize]
+    public void Initialize() => this.telegramHandler = new TelegramHandler18Bit();
+
+
+
     [TestMethod]
     public void Test18BitConvert()
     {
-        TelegramHandler telegramHandler = new TelegramHandler18Bit();
-
         var q1 = new Queue<uint>(new uint[] { 169, 192, 121 });
-        var m1 = telegramHandler.Process(q1);
+        var m1 = this.telegramHandler.Process(q1);
         uint e1 = 124673;
 
         Assert.AreEqual(e1, m1);
@@ -22,9 +28,7 @@ public class TelegramHandler18BitTest
     [TestMethod]
     public void Test18BitHeader()
     {
-        TelegramHandler telegramHandler = new TelegramHandler18Bit();
-        var h = telegramHandler.IsHeader(168);
-
+        var h = this.telegramHandler.IsHeader(168);
         Assert.AreEqual(true, h);
     }
 

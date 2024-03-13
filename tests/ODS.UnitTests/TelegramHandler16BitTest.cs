@@ -6,13 +6,18 @@ using DSE.Library.ODS;
 public class TelegramHandler16BitTest
 {
 
+    private TelegramHandler? telegramHandler;
+
+
+    [TestInitialize]
+    public void Initialize() => this.telegramHandler = new TelegramHandler16Bit();
+
+
     [TestMethod]
     public void Test16BitConvert()
     {
-        TelegramHandler telegramHandler = new TelegramHandler16Bit();
-
         var q1 = new Queue<uint>(new uint[] { 170, 139, 78 });
-        var m1 = telegramHandler.Process(q1);
+        var m1 = this.telegramHandler.Process(q1);
         uint e1 = 20107;
 
         Assert.AreEqual(e1, m1);
