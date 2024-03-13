@@ -7,13 +7,14 @@ public class TelegramHandler16BitTest
 {
 
     [TestMethod]
-    public void TestMethod1()
+    public void Test16BitConvert()
     {
         TelegramHandler telegramHandler = new TelegramHandler16Bit();
 
         var q1 = new Queue<uint>(new uint[] { 170, 139, 78 });
         var m1 = telegramHandler.Process(q1);
-        var e1 = 20107;
+        uint e1 = 20107;
+
         Assert.AreEqual(e1, m1);
     }
 

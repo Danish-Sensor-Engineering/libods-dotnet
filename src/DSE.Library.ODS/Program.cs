@@ -1,13 +1,16 @@
 using DSE.Library.ODS;
 
+/**
+    This is an example program that used the ODS library
+    to setup an event listener to receive measurements.
+*/
+
 internal class Program
 {
 
     public static void Main()
     {
-        // Foo
         Console.WriteLine("Test Program - DSE ODS Library for .net");
-
 
         // Print available ports
         var ports = SerialSensor.GetSerialPorts();
@@ -23,13 +26,12 @@ internal class Program
         {
             Console.WriteLine("Serial port: " + p);
         }
-        //Console.Write("Please enter port name to use: ");
-        //var port = Console.ReadLine();
-        var port = "/dev/ttyUSB0";
+        Console.Write("Please enter port name to use: ");
+        var port = Console.ReadLine();
+        //var port = "/dev/ttyUSB0";
 
         SerialSensor sensor = new();
         sensor.SetTelegramHandler(new TelegramHandler18Bit());  // Or TelegramHandler16Bit()
-
 
         // Register our event handler
         sensor.MeasurementReceived += OnEvent; // register with an event
@@ -37,21 +39,22 @@ internal class Program
         // This can throw error
         if (port != null)
         {
+            Console.WriteLine("Running for 5 seconds ...");
             sensor.OpenPort(port, 115200);
 
             // TODO: Sleep some time
+            Thread.Sleep(5000);
 
             sensor.ClosePort();
         }
 
-        // Done.
     }
 
 
     // event handler
     public static void OnEvent(object sender, uint measurement)
     {
-        // TODO: Do something with measurement result
+        // TODO: Business logic for measurements
         Console.WriteLine("Measurement Event: " + measurement);
     }
 

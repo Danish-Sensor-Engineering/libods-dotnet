@@ -7,14 +7,25 @@ public class TelegramHandler18BitTest
 {
 
     [TestMethod]
-    public void TestMethod1()
+    public void Test18BitConvert()
     {
         TelegramHandler telegramHandler = new TelegramHandler18Bit();
 
         var q1 = new Queue<uint>(new uint[] { 169, 192, 121 });
         var m1 = telegramHandler.Process(q1);
-        var e1 = 124673;
+        uint e1 = 124673;
+
         Assert.AreEqual(e1, m1);
+    }
+
+
+    [TestMethod]
+    public void Test18BitHeader()
+    {
+        TelegramHandler telegramHandler = new TelegramHandler18Bit();
+        var h = telegramHandler.IsHeader(168);
+
+        Assert.AreEqual(true, h);
     }
 
 

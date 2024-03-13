@@ -11,7 +11,7 @@ public abstract class TelegramHandler
     public uint Process(Queue<uint> readBuffer)
     {
 
-        if (readBuffer.Count < 4)
+        if (readBuffer.Count < 3)
         {
             return 0;
         }

@@ -19,7 +19,7 @@ public class SerialSensor : Sensor, IDisposable
 
         var ports = SerialPort.GetPortNames();
 
-        if(ports == null || ports.Length < 1)
+        if (ports == null || ports.Length < 1)
         {
             Console.WriteLine("No serial ports found.");
             return;
@@ -58,7 +58,7 @@ public class SerialSensor : Sensor, IDisposable
 
     public void ClosePort()
     {
-        if(this.serialPort != null && this.serialPort.IsOpen)
+        if (this.serialPort != null && this.serialPort.IsOpen)
         {
             this.StopReaderThread();
             this.serialPort.Close();
@@ -70,10 +70,7 @@ public class SerialSensor : Sensor, IDisposable
     {
         this.serialReaderThread = new Thread(new ThreadStart(this.SerialReader));
         this.serialReaderThread.Start();
-
         this.@continue = true;
-        Thread.Sleep(5000);
-        this.@continue = false;
     }
 
 
