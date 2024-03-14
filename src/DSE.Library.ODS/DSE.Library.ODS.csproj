@@ -11,7 +11,8 @@
     <Authors>Mark Nellemann</Authors>
     <Company>Danish Sensor Engineering</Company>
     <Product>ODS Library</Product>
-
+    <PackageDescription>Library for communicating with ODS sensors from DSE.</PackageDescription>
+    <RepositoryUrl>https://github.com/Danish-Sensor-Engineering/libods-dotnet/</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

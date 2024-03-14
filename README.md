@@ -5,5 +5,16 @@ DSE ODS .NET Library
 
 
 
-## Development
+## Build & Release
 
+
+```shell
+dotnet build --configuration Releas
+dotnet pack --configuration Release
+```
+
+Publish to Github (not working yet)
+
+```shell
+dotnet nuget push "bin/Release/DSE.Library.ODS.0.0.1.nupkg" --source "github"
+```
