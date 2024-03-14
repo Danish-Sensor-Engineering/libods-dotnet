@@ -31,10 +31,11 @@ internal sealed class Program
         //var port = "/dev/ttyUSB0";
 
         SerialSensor sensor = new();
-        sensor.SetTelegramHandler(new TelegramHandler18Bit());  // Or TelegramHandler16Bit()
+        sensor.SetTelegramHandler(new TelegramHandler18Bit());  
+        // Or TelegramHandler16Bit()
 
         // Register our event handler
-        sensor.MeasurementReceived += OnEvent; // register with an event
+        sensor.MeasurementReceived += OnEvent;
 
         // This can throw error
         if (port != null)

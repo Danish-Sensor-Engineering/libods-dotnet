@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <OutputType>exe</OutputType> <!-- Remove after testing -->
+    <!--<OutputType>exe</OutputType>--> <!-- Remove after testing -->
 
     <PackageId>DSE.Library.ODS</PackageId>
     <Version>0.0.1</Version>
